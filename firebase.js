@@ -1,13 +1,8 @@
 // Import the functions you need from the SDKs you need
-//import * as firebase from "firebase";
-import firebase from 'firebase/app';
-import '@firebase/util';
-import '@firebase/logger';
-import '@firebase/webchannel-wrapper';
-import "firebase/auth";
-//import firebase from "@firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+//import firebase from 'firebase/app'
+import * as firebase from 'firebase'
+import 'firebase/firestore';
+import 'firebase/auth';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,15 +14,23 @@ const firebaseConfig = {
   appId: "1:272421736523:web:6e22c6328ef618fd313dce"
 };
 
+//firebase.initializeApp(firebaseConfig)
+
+
 // Initialize Firebase
 let app;
 if(firebase.apps.length === 0){
-   app = firebase.initializeApp(firebaseConfig); 
+  app = firebase.initializeApp(firebaseConfig); 
 }
 else{
-    app=firebase.app()
+  app=firebase.app()
 }
 
 const auth = firebase.auth()
 
+const db = firebase.firestore(app);
+const dbUsers = firebase.firestore(app);
+
+export const BrainobrainRef = db.collection("Brainobrain");
+export const UsersRef = dbUsers.collection("Users");
 export {auth};

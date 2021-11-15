@@ -1,10 +1,16 @@
 import React from "react";
 import { Formik } from "formik";
-import { View,  StyleSheet, Text, TextInput, Button,TouchableOpacity, } from 'react-native';
+import { View,  StyleSheet, Text, TextInput, Button,TouchableOpacity, Alert } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import moment from "moment";
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { BrainobrainRef } from "../../firebase";
 export default function AddNotice({navigation}){
+    const navigateNoticeScreen = () => {
+        navigation.navigate('NoticeScreen', {
+            click: Math.floor(Math.random() * 10000),
+        });
+    }
     return(
         <View style={styles.container}>
             <View style={styles.header}>
@@ -18,8 +24,43 @@ export default function AddNotice({navigation}){
             >
                 <Formik
                     initialValues={{title:'', description:''}}
+                    
                     onSubmit={(values)=>{
-                        console.log(values);
+                        if(values.title.trim().length === 0 || values.description.trim().length === 0){
+                            Alert.alert('Wrong Input!', 'Title or Description field cannot be empty.', [
+                                {text: 'Okay'}
+                            ]);
+                            return;
+                        }
+
+                        BrainobrainRef
+                        .add({
+                            title:values.title,
+                            description:values.description,
+                            postTime: moment().toDate()
+                        })
+                        .then(()=>{
+                            Alert.alert(
+                                'Added notice!',
+                                'You have successfully added the notice.',
+                                [
+                                    {
+                                        text:'Add more',
+                                        onPress : ()=> navigation.navigate('AddNotice')
+                                    },
+                                    {
+                                        text:'Ok',
+                                        onPress: () => navigateNoticeScreen()
+                                    }
+                                ],
+                                {cancelable: false}
+                            );
+
+                        })
+                        .catch((error) => {
+                            Alert.alert(error.message)
+                        })
+                       
                     }}
                 >
                     {props=>(
@@ -48,8 +89,7 @@ export default function AddNotice({navigation}){
                             <View style={styles.button}>
                                 <TouchableOpacity
                                     style={styles.addNotice}
-                                    onPress={() => navigation.navigate('NoticeScreen')}
-                                    //onPress={props.handleSubmit}
+                                    onPress={props.handleSubmit}
                                 >
                                 <LinearGradient
                                     colors={['#08d4c4', '#01ab9d']}
@@ -57,6 +97,21 @@ export default function AddNotice({navigation}){
                                 >
                                     <Text style={[styles.textSign, { color:'#fff' }]}>Add</Text>
                                 </LinearGradient>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.button}>
+                                <TouchableOpacity
+                                    style={[styles.addNotice,{
+                                        borderColor: '#009387',
+                                        borderWidth: 1,
+                                        marginTop: 18,
+                                    }]}
+                                    onPress={() => navigation.navigate("NoticeScreen", {
+                                        click: Math.floor(Math.random() * 10000),
+                                    })}
+                                >
+                                <Text style={[styles.textSign, { color: '#009387'}]}>Go Back</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -120,5 +175,9 @@ const styles = StyleSheet.create({
     button: {
         alignItems: 'center',
         marginTop: 50
+    },
+    textSign: {
+        fontSize: 18,
+        fontWeight: 'bold'
     },
 });

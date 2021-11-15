@@ -1,15 +1,33 @@
 import { useNavigation } from '@react-navigation/core';
-import React from 'react'
-import { View,  StyleSheet, Text, TouchableOpacity, } from 'react-native';
+import React,{useEffect, useState} from 'react'
+import { View,  StyleSheet, Text, TouchableOpacity, FlatList, Paragraph} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
 import { auth } from '../../firebase';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { Feather, FontAwesome5 } from '@expo/vector-icons';
+import { UsersRef } from '../../firebase';
 
+const Card = ({ name, email, teacher }) => (
+  <View style={styles.card}> 
+    <View style={styles.cardContent}>
+    <Text style={styles.title}>Name : <Text style={styles.values}>{name}</Text></Text>
+    <Text style={styles.title}>Email : <Text style={styles.values}>{email}</Text></Text>
+    {teacher == "true"?
+        <Text style={styles.title}>Post : <Text style={styles.values}>Teacher</Text> </Text>:
+        <Text style={styles.title}>Post : <Text style={styles.values}>Student</Text> </Text>
+    }
+    </View>    
+  </View>
+);
 const ProfileScreen = () => {
 
     const navigation = useNavigation();
-
+    const [emailId,setEmailId] = useState(auth.currentUser?.email);
+    const[Users, setUsers] = useState(null);
+    const[loading,setLoading] = useState(true);
+    const[count, setCount] = useState(0);
+    let emailID= auth.currentUser?.email;
+    
     const signOutHandle = () =>{
         auth
         .signOut()
@@ -19,21 +37,81 @@ const ProfileScreen = () => {
         })
         .catch(error => alert(error.message))
     }
+    const fetchEmail = async() =>{
+    try{
+      await 
+      setEmailId(auth.currentUser?.email);
+      emailID = auth.currentUser?.email;
+      fetchUsers(emailID);
+    }catch(e){
+        console.log(e);
+      }
+  }
+
+    const fetchUsers = async(emailid) => {
+      try {
+        
+        const users = [];
+        await UsersRef
+        .where("email", "==", emailid)
+        .where("email","!=", null)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach(doc => {
+            const { name, email, teacher} = doc.data();
+            users.push({
+              id: doc.id,
+              name:name,
+              email:email,
+              teacher:teacher
+            });
+          })
+        })
+        setUsers(users);
+        setCount(users.length);
+        if(loading){
+          setLoading(false);
+        }
+        
+      
+      }catch(e){
+        console.log(e);
+      }
+    }
+
+    useEffect(()=>{
+        fetchEmail();
+    },[])
 
     return (
          <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.text_header}>Hello!</Text>
             </View>
+            {loading?
+            <Feather name="loader"  style={[styles.loader,styles.footer]}/>:
             <Animatable.View 
             animation="fadeInUpBig"
             style={[styles.footer, {
                 backgroundColor: "#fff"
             }]}
             >
-               <View>
-                    <Text style={styles.info_back}>Email: {auth.currentUser?.email}</Text>
-                </View>
+                {count > 0?
+                    <FlatList
+                        data={Users}
+                        renderItem={({item})=>(
+                        <Card
+                            id={item.id}
+                            name={item.name}
+                            email={item.email}
+                            teacher={item.teacher}
+                        />
+                        )}
+                        keyExtractor={item => item.id}
+                        showsVerticalScrollIndicator={false}
+                    />:
+                    <Text style={styles.titles}>Email : <Text style={styles.values}>{auth.currentUser?.email}</Text></Text>
+                }
                 
                 <View style={styles.button}>
                     <TouchableOpacity
@@ -64,7 +142,9 @@ const ProfileScreen = () => {
                         </TouchableOpacity>
                     </View>
                  </View>
+                 
             </Animatable.View>
+            }   
         </View>
     )
 }
@@ -114,7 +194,22 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        marginTop: 190,
+        marginTop: 30,
+    },
+    title:{
+        fontSize:16,
+        fontWeight:"500",
+        margin:2
+    },
+    titles:{
+        fontSize:16,
+        fontWeight:"500",
+        marginHorizontal:2,
+        marginBottom:80
+    },
+    values:{
+        fontSize:16,
+        color:"#009387"
     },
     button1: {
         alignItems: 'center',
@@ -134,5 +229,11 @@ const styles = StyleSheet.create({
         color: '#000',
         marginTop:10,
         fontSize:17
-    }
+    },
+    loader:{
+        fontSize:40,
+        color:"#009387",
+        textAlign:"center",
+        textAlignVertical:"center"
+    },
 });

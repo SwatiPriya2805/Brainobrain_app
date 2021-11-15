@@ -17,6 +17,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { auth } from '../../firebase';
 import validator from 'validator';
+import {Permissions, Notifications} from 'expo';
+import { UsersRef } from '../../firebase';
 
 const SignUpScreen = () => {
 
@@ -30,6 +32,38 @@ const SignUpScreen = () => {
     });
 
     const navigation = useNavigation()
+
+      registerForPushNotificationsAsync = async (user) => {
+        const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+        );
+        let finalStatus = existingStatus;
+
+        if(existingStatus !== 'granted'){
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+        }
+        if(finalStatus !== 'granted'){
+        return;
+        }
+
+        let token = await Notifications.getExpoPushTokenAsync();
+        // if (Platform.OS === 'android') {
+        // Notifications.setNotificationChannelAsync('default', {
+        //     name: 'default',
+        //     importance: Notifications.AndroidImportance.MAX,
+        //     vibrationPattern: [0, 250, 250, 250],
+        //     lightColor: '#FF231F7C',
+        // });
+        // }
+
+        var updates = {}
+        updates['/Token'] = token
+        UsersRef.child(user.email).update(updates)
+
+        console.log(token);
+    }
+
 
     useEffect(()=>{
         const unsubscribe = auth.onAuthStateChanged(user =>{
@@ -116,6 +150,7 @@ const SignUpScreen = () => {
         .then(userCredentials => {
             const user = userCredentials.user;
             console.log('Registered with : ',user.email);
+            registerForPushNotificationsAsync(user);
 
         })
         .catch(error => alert(error.message))
@@ -160,7 +195,7 @@ const SignUpScreen = () => {
             </View>
             { data.isValidUser ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Email must be 10 characters long.</Text>
+            <Text style={styles.errorMsg}>Email must be atleast 10 characters long.</Text>
             </Animatable.View>
             }
 
@@ -201,7 +236,7 @@ const SignUpScreen = () => {
 
             { data.isValidPassword ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
+            <Text style={styles.errorMsg}>Password must be atleast 8 characters long.</Text>
             </Animatable.View>
             }
             

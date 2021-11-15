@@ -27,7 +27,9 @@ const App = () =>{
         setFirstLaunch(false);
       }
     });
+
   },[]);
+
 
   if( isFirstLaunch=== null){
     return null;
@@ -41,6 +43,7 @@ const App = () =>{
           <RootStack.Screen options={{headerShown:false}} name="SignInScreen" component={SignInScreen}/>
           <RootStack.Screen options={{headerShown:false}} name="SignUpScreen" component={SignUpScreen}/>
           <RootStack.Screen options={{headerShown:false}} name="NoticeScreen" component={NoticeScreen}/>
+          <RootStack.Screen options={{headerShown:false}} name="AddNotice" component={AddNotice}/>
           <RootStack.Screen options={{headerShown:false}} name="UsersScreen" component={UsersScreen}/>
           <RootStack.Screen options={{headerShown:false}} name="ProfileScreen" component={ProfileScreen}/>
         </RootStack.Navigator>
@@ -50,8 +53,8 @@ const App = () =>{
   else{
     return (
       <NavigationContainer >
-        <RootStack.Navigator>
-          {/* <RootStack.Screen name="OnboardingScreen" component={OnboardingScreen}/> */}
+         <RootStack.Navigator>
+          {/* <RootStack.Screen name="OnboardingScreen" component={OnboardingScreen}/>   */}
           {/* <RootStack.Screen options={{headerShown:false}} name="SplashScreen" component={SplashScreen}/> */}
           <RootStack.Screen options={{headerShown:false}} name="SignInScreen" component={SignInScreen}/>
           <RootStack.Screen options={{headerShown:false}} name="SignUpScreen" component={SignUpScreen}/>
@@ -67,16 +70,3 @@ const App = () =>{
 }
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
