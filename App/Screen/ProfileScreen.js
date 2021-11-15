@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import React,{useEffect, useState} from 'react'
-import { View,  StyleSheet, Text, TouchableOpacity, FlatList, Paragraph} from 'react-native';
+import { View,  StyleSheet, Text, TouchableOpacity, FlatList, Paragraph, Platform} from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { LinearGradient } from 'expo-linear-gradient';
 import { auth } from '../../firebase';
@@ -234,6 +234,7 @@ const styles = StyleSheet.create({
         fontSize:40,
         color:"#009387",
         textAlign:"center",
-        textAlignVertical:"center"
+        textAlignVertical:"center",
+        paddingTop: Platform.OS ==='ios'?40:0,
     },
 });

@@ -39,7 +39,7 @@ const Card = ({ id, name, email, onDelete, teacher }) => (
       }
       <View style={styles.removeContainer}>
         <View style={styles.removePostContainer}>
-          <FontAwesome5 style={styles.removePost} name="trash" onPress={() => {onDelete(id)}} />
+          <FontAwesome5 style={styles.removePost} name="trash" onPress={() => {onDelete(id, name)}} />
         </View>
       </View>
     </View>
@@ -112,14 +112,13 @@ const UsersScreen = () =>{
     setDeleted(false);
   },[deleted]);
 
-  const handleDeletePost = (id) =>{
+  const handleDeletePost = (id, name) =>{
     Alert.alert(
       'Remove user',
-      'Are you sure?',
+      'Are you sure, you want to remove " '+name+' "?',
       [
         {
           text:'Cancel',
-          onPress:()=> console.log('Cancel button pressed'),
           style:'cancel'
         },
         {
@@ -227,6 +226,7 @@ const UsersScreen = () =>{
                     <TextInput
                         style={styles.textInput}
                         placeholder='Add email'
+                        autoCapitalize='none'
                         onChangeText={props.handleChange('email')}
                         value={props.values.email}
                     />
@@ -260,7 +260,7 @@ const UsersScreen = () =>{
                             }]}
                             onPress={() => navigation.navigate("NoticeScreen")}
                         >
-                        <Text style={[styles.textSign, { color: '#009387'}]}>View notice</Text>
+                        <Text style={[styles.textSign, { color: '#009387'}]}>View Notice</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

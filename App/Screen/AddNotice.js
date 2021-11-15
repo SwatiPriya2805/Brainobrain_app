@@ -1,11 +1,12 @@
 import React from "react";
 import { Formik } from "formik";
-import { View,  StyleSheet, Text, TextInput, Button,TouchableOpacity, Alert } from 'react-native';
+import { View,  StyleSheet, Text, TextInput, Button,TouchableOpacity, Alert, KeyboardAvoidingView, ScrollView } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import moment from "moment";
 import { LinearGradient } from 'expo-linear-gradient';
 import { BrainobrainRef } from "../../firebase";
-export default function AddNotice({navigation}){
+export default function AddNotice({route, navigation}){
+    const  {name}  = route.params || '';
     const navigateNoticeScreen = () => {
         navigation.navigate('NoticeScreen', {
             click: Math.floor(Math.random() * 10000),
@@ -14,7 +15,7 @@ export default function AddNotice({navigation}){
     return(
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.text_header}>Notice Form</Text>
+                <Text style={styles.text_header}>Add Notice</Text>
             </View>
             <Animatable.View 
             animation="fadeInUpBig"
@@ -22,101 +23,108 @@ export default function AddNotice({navigation}){
                 backgroundColor: "#fff"
             }]}
             >
-                <Formik
-                    initialValues={{title:'', description:''}}
-                    
-                    onSubmit={(values)=>{
-                        if(values.title.trim().length === 0 || values.description.trim().length === 0){
-                            Alert.alert('Wrong Input!', 'Title or Description field cannot be empty.', [
-                                {text: 'Okay'}
-                            ]);
-                            return;
-                        }
+                <ScrollView>
+                    <KeyboardAvoidingView behavior="padding">
+                    <Formik
+                        initialValues={{title:'', description:''}}
+                        
+                        onSubmit={(values)=>{
+                            if(values.title.trim().length === 0 || values.description.trim().length === 0){
+                                Alert.alert('Wrong Input!', 'Title or Description field cannot be empty.', [
+                                    {text: 'Okay'}
+                                ]);
+                                return;
+                            }
 
-                        BrainobrainRef
-                        .add({
-                            title:values.title,
-                            description:values.description,
-                            postTime: moment().toDate()
-                        })
-                        .then(()=>{
-                            Alert.alert(
-                                'Added notice!',
-                                'You have successfully added the notice.',
-                                [
-                                    {
-                                        text:'Add more',
-                                        onPress : ()=> navigation.navigate('AddNotice')
-                                    },
-                                    {
-                                        text:'Ok',
-                                        onPress: () => navigateNoticeScreen()
-                                    }
-                                ],
-                                {cancelable: false}
-                            );
+                            BrainobrainRef
+                            .add({
+                                title:values.title,
+                                description:values.description,
+                                postTime: moment().toDate(),
+                                postedBy: name
+                            })
+                            .then(()=>{
+                                Alert.alert(
+                                    'Added notice!',
+                                    'You have successfully added the notice.',
+                                    [
+                                        {
+                                            text:'Add more',
+                                            onPress : ()=> navigation.navigate('AddNotice',{
+                                                name : name
+                                            })
+                                        },
+                                        {
+                                            text:'Ok',
+                                            onPress: () => navigateNoticeScreen()
+                                        }
+                                    ],
+                                    {cancelable: false}
+                                );
 
-                        })
-                        .catch((error) => {
-                            Alert.alert(error.message)
-                        })
-                       
-                    }}
-                >
-                    {props=>(
-                        <View>
-                            <Text style={[styles.text_footer, {
-                                color:"#05375a"
-                            }]}>Title</Text>
-                            <TextInput
-                                multiline
-                                style={styles.textInput}
-                                placeholder='Add title'
-                                onChangeText={props.handleChange('title')}
-                                value={props.values.title}
-                            />
-                            <Text style={[styles.text_footer, {
-                                color:"#05375a"
-                            }]}>Description</Text>
-                            <TextInput
-                                multiline
-                                style={styles.textInput}
-                                placeholder='Add description'
-                                onChangeText={props.handleChange('description')}
-                                value={props.values.description}
-                            />
+                            })
+                            .catch((error) => {
+                                Alert.alert(error.message)
+                            })
+                        
+                        }}
+                    >
+                        {props=>(
+                            <View>
+                                <Text style={[styles.text_footer, {
+                                    color:"#05375a"
+                                }]}>Title</Text>
+                                <TextInput
+                                    multiline
+                                    style={styles.textInput}
+                                    placeholder='Add title'
+                                    onChangeText={props.handleChange('title')}
+                                    value={props.values.title}
+                                />
+                                <Text style={[styles.text_footer, {
+                                    color:"#05375a"
+                                }]}>Description</Text>
+                                <TextInput
+                                    multiline
+                                    style={styles.textInput}
+                                    placeholder='Add description'
+                                    onChangeText={props.handleChange('description')}
+                                    value={props.values.description}
+                                />
 
-                            <View style={styles.button}>
-                                <TouchableOpacity
-                                    style={styles.addNotice}
-                                    onPress={props.handleSubmit}
-                                >
-                                <LinearGradient
-                                    colors={['#08d4c4', '#01ab9d']}
-                                    style={styles.addNotice}
-                                >
-                                    <Text style={[styles.textSign, { color:'#fff' }]}>Add</Text>
-                                </LinearGradient>
-                                </TouchableOpacity>
+                                <View style={styles.button}>
+                                    <TouchableOpacity
+                                        style={styles.addNotice}
+                                        onPress={props.handleSubmit}
+                                    >
+                                    <LinearGradient
+                                        colors={['#08d4c4', '#01ab9d']}
+                                        style={styles.addNotice}
+                                    >
+                                        <Text style={[styles.textSign, { color:'#fff' }]}>Add</Text>
+                                    </LinearGradient>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={styles.button}>
+                                    <TouchableOpacity
+                                        style={[styles.addNotice,{
+                                            borderColor: '#009387',
+                                            borderWidth: 1,
+                                            marginTop: 18,
+                                        }]}
+                                        onPress={() => navigation.navigate("NoticeScreen", {
+                                            click: Math.floor(Math.random() * 10000),
+                                        })}
+                                    >
+                                    <Text style={[styles.textSign, { color: '#009387'}]}>Go Back</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-
-                            <View style={styles.button}>
-                                <TouchableOpacity
-                                    style={[styles.addNotice,{
-                                        borderColor: '#009387',
-                                        borderWidth: 1,
-                                        marginTop: 18,
-                                    }]}
-                                    onPress={() => navigation.navigate("NoticeScreen", {
-                                        click: Math.floor(Math.random() * 10000),
-                                    })}
-                                >
-                                <Text style={[styles.textSign, { color: '#009387'}]}>Go Back</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    )}
-                </Formik>    
+                        )}
+                    </Formik>  
+                    </KeyboardAvoidingView> 
+                </ScrollView> 
             </Animatable.View>
         </View>
     )

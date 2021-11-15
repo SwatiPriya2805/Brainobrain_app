@@ -11,12 +11,12 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { BrainobrainRef } from '../../firebase';
 import { auth } from '../../firebase';
 import { UsersRef } from '../../firebase';
-import _ from 'underscore';
 
-const Card = ({ id, title, description, onDelete,postTime, teacher }) => (
+const Card = ({ id, postedBy, title, description, onDelete,postTime, teacher }) => (
   <View style={styles.card}>
     <View style={styles.cardContent}>
       <Text style={styles.dateTime}>{moment(postTime.toDate()).fromNow()} </Text>
+      <Text style={styles.postByContainer}><Text style={styles.postedBy}>{postedBy}</Text> posted </Text>
       <Text style={styles.title}>{title}</Text>
       <Paragraph>{description}</Paragraph>
       {teacher == "true"?
@@ -46,6 +46,7 @@ const NoticeScreen = ({route}) =>{
   const navigation = useNavigation();
   const [emailId, setEmailId] = useState(emailID); 
   const [teacher, setTeacher] = useState("false");
+  const [name, setName] = useState('');
   const [Brainobrain, setBrainobrain] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [deleted, setDeleted] = useState(false);
@@ -96,6 +97,7 @@ const NoticeScreen = ({route}) =>{
       setCount(users.length);
       if(users.length > 0){
         setTeacher(users[0].teacher);
+        setName(users[0].name);
       }
       
     }catch(e){
@@ -114,9 +116,10 @@ const NoticeScreen = ({route}) =>{
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach(doc => {
-          const { title, description, postTime} = doc.data();
+          const { postedBy, title, description, postTime } = doc.data();
           brainobrain.push({
             id: doc.id,
+            postedBy :postedBy,
             title: title,
             description: description,
             postTime: postTime
@@ -222,7 +225,9 @@ const NoticeScreen = ({route}) =>{
             teacher == "true"?
             <View style={styles.iconHeaderContainer}>
               <View style={styles.addIconContainer}>
-                <Ionicons style={styles.add}  name="add-circle-outline" onPress={()=>navigation.navigate('AddNotice')} />
+                <Ionicons style={styles.add}  name="add-circle-outline" onPress={()=>navigation.navigate('AddNotice',{
+                  name : name
+                })} />
                 <FontAwesome5 style={styles.users} name="users-cog" onPress={()=>navigation.navigate('UsersScreen')} />
                 <FontAwesome style={styles.userAccount} name="user" onPress={()=>navigation.navigate('ProfileScreen')}/>
               </View>
@@ -273,6 +278,7 @@ const NoticeScreen = ({route}) =>{
                   renderItem={({item})=>(
                     <Card
                       id={item.id}
+                      postedBy={item.postedBy}
                       title={item.title}
                       description={item.description}
                       postTime={item.postTime}
@@ -312,7 +318,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingHorizontal: 20,
-    paddingVertical: 10
+    paddingVertical: 5
   },
   text_header: {
     color: '#fff',
@@ -341,7 +347,7 @@ const styles = StyleSheet.create({
     marginVertical: 12
   },
   cardContent: {
-    marginHorizontal: 8,
+    marginHorizontal: 12,
     marginVertical: 5,
   },
   action: {
@@ -371,11 +377,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize:35,
     fontWeight:"bold",
-    marginTop:-44,
-    marginRight:120,
+    marginTop:-48,
+    marginRight:122.5,
     backgroundColor:"#01ab9d",
     elevation:8,
-    paddingVertical:6,
+    paddingVertical:5,
     paddingLeft:7,
     paddingRight:6,
     borderRadius:25,
@@ -386,9 +392,9 @@ const styles = StyleSheet.create({
     alignContent:"flex-end"
   },
   users:{
-    fontSize:25,
+    fontSize:26,
     color:"#fff",
-    marginTop:-49,
+    marginTop:-48,
     marginHorizontal:60,
     fontWeight:"bold",
     backgroundColor:"#01ab9d",
@@ -439,6 +445,15 @@ const styles = StyleSheet.create({
     fontSize:60,
     color:"#009387",
     textAlign:"center",
-    textAlignVertical:"center"
+    textAlignVertical:"center",
+    paddingTop: Platform.OS==='ios'?135:0,
   },
+  postByContainer:{
+    marginTop:-20
+  },
+  postedBy:{
+    color:"#009589",
+    fontStyle:"italic",
+    fontWeight:"900",
+  }
 });
