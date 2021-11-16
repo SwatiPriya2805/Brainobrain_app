@@ -104,10 +104,10 @@ const styles = StyleSheet.create({
   },
   signIn: {
       width: 170,
-      height: 40,
+      height: Platform.OS=== 'ios'?50: 40,
       justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 50,
+      alignItems:'center',
+      borderRadius: Platform.OS=== 'ios'?25:50,
       flexDirection: 'row'
   },
   textSign: {

@@ -54,7 +54,7 @@ const App = () =>{
     return (
       <NavigationContainer >
          <RootStack.Navigator>
-          {/* <RootStack.Screen name="OnboardingScreen" component={OnboardingScreen}/>   */}
+          {/* <RootStack.Screen options={{headerShown:false}} name="OnboardingScreen" component={OnboardingScreen}/>   */}
           {/* <RootStack.Screen options={{headerShown:false}} name="SplashScreen" component={SplashScreen}/> */}
           <RootStack.Screen options={{headerShown:false}} name="SignInScreen" component={SignInScreen}/>
           <RootStack.Screen options={{headerShown:false}} name="SignUpScreen" component={SignUpScreen}/>

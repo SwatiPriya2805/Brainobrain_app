@@ -140,9 +140,8 @@ const NoticeScreen = ({route}) =>{
 
   
   useEffect(()=>{
-    if(click > 0 ){ //&& clicked == true 
+    if(click > 0 ){ 
       onRefreshing();
-      //setClicked(false);
     }
   },[click])
   
@@ -449,11 +448,10 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS==='ios'?135:0,
   },
   postByContainer:{
-    marginTop:-20
+    marginTop:-15
   },
   postedBy:{
     color:"#009589",
     fontStyle:"italic",
-    fontWeight:"900",
   }
 });
