@@ -18,16 +18,10 @@ const OnboardingScreen = ({ navigation }) => {
                 },
                 {
                     backgroundColor: '#fff',
-                    image: <Image style={styles.images} source={require('../Assets/Push_notification.png')} />,
-                    title: 'Be Notified ',
-                    subtitle: 'Be the first to be notified. Stay updated with the latest information from your teacher.',
-                },
-                // {
-                //     backgroundColor: '#fff',
-                //     image: <Image style={styles.images} source={require('../Assets/Enjoy.png')} />,
-                //     title: 'Enjoy',
-                //     subtitle: 'Last but not least, Have Fun!',
-                // },
+                    image: <Image style={styles.images} source={require('../Assets/mathematics.png')} />,
+                    title: 'Learn Something New',
+                    subtitle: 'Don`t forget to read what your teachers wrote! You might learn something new.',
+                }
             ]}
         />
     )

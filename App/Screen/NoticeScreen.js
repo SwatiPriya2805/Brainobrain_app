@@ -29,7 +29,6 @@ const Card = ({ id, postedBy, title, description, onDelete,postTime, teacher }) 
   </View>
 );
 
-
 const CardWarning = () => (
   <View style={styles.card}>
     <View style={styles.cardContent}>
@@ -78,7 +77,6 @@ const NoticeScreen = ({route}) =>{
   const fetchUser = async(emailid) => {
     try {
       const users = [];
-    
       await UsersRef
       .where("email", "==",emailid)
       .get()
@@ -99,7 +97,6 @@ const NoticeScreen = ({route}) =>{
         setTeacher(users[0].teacher);
         setName(users[0].name);
       }
-      
     }catch(e){
       console.log(e);
     }
@@ -108,7 +105,6 @@ const NoticeScreen = ({route}) =>{
   const fetchPosts = async() => {
     try {
       const brainobrain = [];
-
       await BrainobrainRef
       // firestore()
       // .collection('Brainobrain')
@@ -132,25 +128,21 @@ const NoticeScreen = ({route}) =>{
       if(loading){
         setLoading(false);
       }
-
     }catch(e){
       console.log(e);
     }
   }
 
-  
   useEffect(()=>{
     if(click > 0 ){ 
       onRefreshing();
     }
   },[click])
   
-
   const searchFilter =(text)=>{
     if(text){
       const newData = Brainobrain.filter((item) => {
         return (item.title.toLowerCase().includes(text.toLowerCase())||item.description.toLowerCase().includes(text.toLowerCase()));
-        //return itemData.indexOf(textData) > -1;
       });
       setFilteredData(newData);
       setSearch(text);
@@ -214,7 +206,6 @@ const NoticeScreen = ({route}) =>{
     .catch(error => alert(error.message))
   }
 
-
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor='#009387' barStyle="light-content"/>
@@ -250,49 +241,46 @@ const NoticeScreen = ({route}) =>{
             style={styles.textInput}
             autoCapitalize="none"
             value={search}
-            onChangeText={(text) => searchFilter(text)}
-          // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}  
+            onChangeText={(text) => searchFilter(text)} 
           />
         </View>
         {loading?
-           <Feather name="loader" style={[styles.loader,styles.footer]}/>:
-          
-            <Animatable.View
-              animation="fadeInUpBig"
-              style={[styles.footer, {
-                backgroundColor: "#fff"
-              }]}
-            >
-             <ScrollView refreshControl={
+          <Feather name="loader" style={[styles.loader,styles.footer]}/>:
+          <Animatable.View
+            animation="fadeInUpBig"
+            style={[styles.footer, {
+              backgroundColor: "#fff"
+            }]}
+          >
+            <ScrollView refreshControl={
               <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefreshing}
               colors={['#009387']}
               />
             }>
-              {count > 0 ? 
+            {count > 0 ? 
 
-                <FlatList
-                  data={filteredData}
-                  renderItem={({item})=>(
-                    <Card
-                      id={item.id}
-                      postedBy={item.postedBy}
-                      title={item.title}
-                      description={item.description}
-                      postTime={item.postTime}
-                      onDelete={handleDeletePost}
-                      teacher={teacher}
-                    />
-                  )}
-                  keyExtractor={item => item.id}
-                  showsVerticalScrollIndicator={true}
-                />:
-                <CardWarning/>
-              }
-            </ScrollView>    
-            </Animatable.View>
-          
+              <FlatList
+                data={filteredData}
+                renderItem={({item})=>(
+                  <Card
+                    id={item.id}
+                    postedBy={item.postedBy}
+                    title={item.title}
+                    description={item.description}
+                    postTime={item.postTime}
+                    onDelete={handleDeletePost}
+                    teacher={teacher}
+                  />
+                )}
+                keyExtractor={item => item.id}
+                showsVerticalScrollIndicator={true}
+              />:
+              <CardWarning/>
+            }
+          </ScrollView>    
+          </Animatable.View>
         }
       </View>
     );
@@ -302,7 +290,6 @@ export default NoticeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //marginTop: StatusBar.currentHeight || 0,
     backgroundColor: '#009387',
   },
   header: {

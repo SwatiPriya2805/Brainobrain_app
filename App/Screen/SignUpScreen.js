@@ -28,7 +28,6 @@ const SignUpScreen = () => {
         isValidUser: true,
         isValidPassword: true,
     });
-
     const navigation = useNavigation()
 
     useEffect(()=>{
@@ -39,7 +38,6 @@ const SignUpScreen = () => {
         })
         return unsubscribe
     },[])
-
 
     const textInputChange = (val) => {
         if( val.trim().length >= 10 ) {
@@ -243,8 +241,8 @@ export default SignUpScreen;
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1, 
-      backgroundColor: '#009387'
+        flex: 1, 
+        backgroundColor: '#009387'
     },
     header: {
         flex: 1,
@@ -312,4 +310,4 @@ const styles = StyleSheet.create({
         color: '#009387',
         marginTop:55
     }
-  });
+});

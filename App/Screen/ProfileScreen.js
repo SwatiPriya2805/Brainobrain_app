@@ -38,19 +38,18 @@ const ProfileScreen = () => {
         .catch(error => alert(error.message))
     }
     const fetchEmail = async() =>{
-    try{
-      await 
-      setEmailId(auth.currentUser?.email);
-      emailID = auth.currentUser?.email;
-      fetchUsers(emailID);
-    }catch(e){
-        console.log(e);
-      }
-  }
+        try{
+            await 
+            setEmailId(auth.currentUser?.email);
+            emailID = auth.currentUser?.email;
+            fetchUsers(emailID);
+        }catch(e){
+            console.log(e);
+        }
+    }
 
     const fetchUsers = async(emailid) => {
       try {
-        
         const users = [];
         await UsersRef
         .where("email", "==", emailid)
@@ -72,8 +71,6 @@ const ProfileScreen = () => {
         if(loading){
           setLoading(false);
         }
-        
-      
       }catch(e){
         console.log(e);
       }
@@ -141,8 +138,7 @@ const ProfileScreen = () => {
                         </LinearGradient>
                         </TouchableOpacity>
                     </View>
-                 </View>
-                 
+                </View>
             </Animatable.View>
             }   
         </View>

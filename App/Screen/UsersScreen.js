@@ -49,30 +49,25 @@ const Card = ({ id, name, email, onDelete, teacher }) => (
 const UsersScreen = () =>{
   
   const navigation = useNavigation();
-
   const[Users, setUsers] = useState(null);
   const[deleted, setDeleted] = useState(false);
   const[loading,setLoading] = useState(true);
   const[add,setAdd] = useState(false);
-  
- const [radioButtons, setRadioButtons] = useState(radioButtonsData);
+  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
+
   const onPressRadioButton = radioButtonsArray => {
-    console.log(radioButtonsArray);
     if(radioButtonsArray[0].selected){
       teacher="true";
     }
     else{
       teacher="false"
     }
-    console.log(teacher);
-
     setRadioButtons(radioButtonsArray);
   }; 
   
   const fetchUsers = async() => {
       try {
         const users = [];
-
         await UsersRef
         // firestore()
         // .collection('Users')
@@ -93,7 +88,6 @@ const UsersScreen = () =>{
         if(loading){
           setLoading(false);
         }
-
       }catch(e){
         console.log(e);
       }
@@ -107,6 +101,7 @@ const UsersScreen = () =>{
     fetchUsers();
     setAdd(false);
   },[add]);
+
   useEffect(() =>{
     fetchUsers();
     setDeleted(false);
@@ -130,7 +125,6 @@ const UsersScreen = () =>{
     )
   }
   const deletePost = (id) => {
-   
     UsersRef
     .doc(id)
     .get()
@@ -154,7 +148,6 @@ const UsersScreen = () =>{
     .catch(error => alert(error.message))
   }
 
-
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor='#009387' barStyle="light-content"/>
@@ -168,53 +161,52 @@ const UsersScreen = () =>{
           }]}
         >
           <ScrollView>
-         <Formik
-            initialValues={{name:'', email:'',teacher:'false'}}
-            
-            onSubmit={(values)=>{
-              if(values.name.trim().length === 0 || values.email.trim().length === 0){
-                Alert.alert('Wrong Input!', 'Name or email field cannot be empty.', [
-                    {text: 'Okay'}
-                ]);
-                return;
-              }
+            <Formik
+                initialValues={{name:'', email:'',teacher:'false'}}
+                
+                onSubmit={(values)=>{
+                  if(values.name.trim().length === 0 || values.email.trim().length === 0){
+                    Alert.alert('Wrong Input!', 'Name or email field cannot be empty.', [
+                        {text: 'Okay'}
+                    ]);
+                    return;
+                  }
 
-               if( !validator.isEmail(values.email) ){
-                Alert.alert('Wrong Input!','Enter a valid email', [
-                    {text: 'Okay'}
-                ]);
-                return;
-              }
+                  if( !validator.isEmail(values.email) ){
+                    Alert.alert('Wrong Input!','Enter a valid email', [
+                        {text: 'Okay'}
+                    ]);
+                    return;
+                  }
 
+                  UsersRef
+                  .add({
+                    name:values.name,
+                    email:values.email,
+                    teacher:teacher
+                  })
+                  .then(()=>{
+                    Alert.alert(
+                      'Added user!',
+                      'You have successfully added the user.',
+                      [
+                        {
+                        text:'Ok',
+                        onPress : ()=> setAdd(true)
+                        }
+                      ],
+                      {cancelable: false}
+                    );
 
-                UsersRef
-                .add({
-                  name:values.name,
-                  email:values.email,
-                  teacher:teacher
-                })
-                .then(()=>{
-                  Alert.alert(
-                    'Added user!',
-                    'You have successfully added the user.',
-                    [
-                      {
-                      text:'Ok',
-                      onPress : ()=> setAdd(true)
-                      }
-                    ],
-                    {cancelable: false}
-                  );
-
-                })
-                .catch((error) => {
-                    Alert.alert(error.message)
-                })
-              
-            }}
-        >
-            {props=>(
-                <View style={styles.form}>
+                  })
+                  .catch((error) => {
+                      Alert.alert(error.message)
+                  })
+                  
+                }}
+              >
+                {props=>(
+                  <View style={styles.form}>
                     <Text style={styles.text_footer}>Name</Text>
                     <TextInput
                         style={styles.textInput}
@@ -238,53 +230,51 @@ const UsersScreen = () =>{
                       />
                     </View>
                     <View style={styles.button}>
-                        <TouchableOpacity
-                            style={styles.addNotice}
-                            onPress={props.handleSubmit}
-                        >
-                        <LinearGradient
-                            colors={['#08d4c4', '#01ab9d']}
-                            style={styles.addNotice}
-                        >
-                            <Text style={[styles.textSign, { color:'#fff' }]}>Add</Text>
-                        </LinearGradient>
-                        </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.addNotice}
+                        onPress={props.handleSubmit}
+                      >
+                      <LinearGradient
+                        colors={['#08d4c4', '#01ab9d']}
+                        style={styles.addNotice}
+                      >
+                        <Text style={[styles.textSign, { color:'#fff' }]}>Add</Text>
+                      </LinearGradient>
+                      </TouchableOpacity>
                     </View>
 
                     <View style={styles.button}>
-                        <TouchableOpacity
-                            style={[styles.addNotice,{
-                                borderColor: '#009387',
-                                borderWidth: 1,
-                                marginTop: 18,
-                            }]}
-                            onPress={() => navigation.navigate("NoticeScreen")}
-                        >
-                        <Text style={[styles.textSign, { color: '#009387'}]}>View Notice</Text>
-                        </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.addNotice,{
+                          borderColor: '#009387',
+                          borderWidth: 1,
+                          marginTop: 18,
+                        }]}
+                        onPress={() => navigation.navigate("NoticeScreen")}
+                      >
+                      <Text style={[styles.textSign, { color: '#009387'}]}>View Notice</Text>
+                      </TouchableOpacity>
                     </View>
-                </View>
-            )}
-        </Formik>   
-
-        
-          <FlatList
-            data={Users}
-            renderItem={({item})=>(
-              <Card
-                id={item.id}
-                name={item.name}
-                email={item.email}
-                teacher={item.teacher}
-                onDelete={handleDeletePost}
-              />
-            )}
-            keyExtractor={item => item.id}
-            showsVerticalScrollIndicator={false}
-          />
+                  </View>
+                )}
+            </Formik>   
+            <FlatList
+              data={Users}
+              renderItem={({item})=>(
+                <Card
+                  id={item.id}
+                  name={item.name}
+                  email={item.email}
+                  teacher={item.teacher}
+                  onDelete={handleDeletePost}
+                />
+              )}
+              keyExtractor={item => item.id}
+              showsVerticalScrollIndicator={false}
+            />
           </ScrollView>
         </Animatable.View>
-        </View>
+      </View>
     )
 }
 
@@ -293,7 +283,6 @@ export default UsersScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //marginTop: StatusBar.currentHeight || 0,
     backgroundColor: '#009387',
   },
   header: {
@@ -443,5 +432,5 @@ const styles = StyleSheet.create({
   textSign: {
     fontSize: 18,
     fontWeight: 'bold'
-  },
+  }
 });

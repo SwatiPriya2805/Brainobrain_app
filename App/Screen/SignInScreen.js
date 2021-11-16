@@ -19,7 +19,6 @@ import Feather from 'react-native-vector-icons/Feather';
 import { auth } from '../../firebase';
 import validator from 'validator';
 
-
 const SignInScreen = () => {
 
     const [data, setData] = React.useState({
@@ -30,11 +29,8 @@ const SignInScreen = () => {
         isValidUser: true,
         isValidPassword: true,
     });
-
     const [loading,setLoading] = useState(true);
-
     const navigation = useNavigation()
-
 
     const fetchUser = async() => {
         const unsubscribe = auth.onAuthStateChanged(user =>{
@@ -202,7 +198,6 @@ const SignInScreen = () => {
                 </Animatable.View>
                 }
                 
-
                 <Text style={[styles.text_footer, {
                     color: "#05375a",
                     marginTop: 35
@@ -287,8 +282,8 @@ export default SignInScreen;
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1, 
-      backgroundColor: '#009387'
+        flex: 1, 
+        backgroundColor: '#009387'
     },
     header: {
         flex: 1,

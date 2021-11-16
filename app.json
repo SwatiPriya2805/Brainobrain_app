@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "demoAPP",
-    "slug": "demoAPP",
+    "name": "BrainOBrain",
+    "slug": "BrainOBrain",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
